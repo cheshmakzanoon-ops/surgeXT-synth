@@ -47,7 +47,11 @@ jobs:
     name: Release - ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     needs: [ surge_version ]
+    env:
+      # Forks without Apple signing certificates build an unsigned macOS installer
+      HAS_MAC_CERTS: ${{ secrets.MAC_CERTS_P12 != '' }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: windows-2022
@@ -99,7 +103,7 @@ jobs:
           git checkout surge-7.0.12
 
       - uses: apple-actions/import-codesign-certs@v3
-        if: runner.os == 'macOS'
+        if: runner.os == 'macOS' && env.HAS_MAC_CERTS == 'true'
         with:
           p12-file-base64: ${{ secrets.MAC_CERTS_P12 }}
           p12-password: ${{ secrets.CERT_PWD }}
