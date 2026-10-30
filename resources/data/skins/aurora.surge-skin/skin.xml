@@ -163,6 +163,7 @@
         <color id="modbutton.selected.used.text" value="#0B0922"/>
         <color id="modbutton.selected.used.text.hover" value="#0B0922"/>
         <color id="modbutton.selected.used.text.usedmod.hover" value="#0B5A44"/>
+        <color id="modbutton.sheen" value="#FFFFFF2E"/>
         <color id="modbutton.unused.fill" value="#191543"/>
         <color id="modbutton.unused.frame" value="#3A3380"/>
         <color id="modbutton.unused.frame.hover" value="#ECEAFF"/>
@@ -330,6 +331,154 @@
         <color id="waveshaper.waveform.dots" value="#07061A"/>
         <color id="waveshaper.waveform.hover" value="#FFFFFF"/>
 
+        <multi-image id="aurora-bg">
+            <image zoom-level="100" resource="PNG/background_100.png"/>
+            <image zoom-level="200" resource="PNG/background_200.png"/>
+            <image zoom-level="400" resource="PNG/background_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-h-cyan">
+            <image zoom-level="100" resource="PNG/handle_h_cyan_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_h_cyan_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_h_cyan_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-v-cyan">
+            <image zoom-level="100" resource="PNG/handle_v_cyan_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_v_cyan_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_v_cyan_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-h-sky">
+            <image zoom-level="100" resource="PNG/handle_h_sky_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_h_sky_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_h_sky_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-v-sky">
+            <image zoom-level="100" resource="PNG/handle_v_sky_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_v_sky_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_v_sky_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-h-azure">
+            <image zoom-level="100" resource="PNG/handle_h_azure_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_h_azure_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_h_azure_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-v-azure">
+            <image zoom-level="100" resource="PNG/handle_v_azure_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_v_azure_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_v_azure_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-h-violet">
+            <image zoom-level="100" resource="PNG/handle_h_violet_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_h_violet_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_h_violet_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-v-violet">
+            <image zoom-level="100" resource="PNG/handle_v_violet_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_v_violet_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_v_violet_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-h-magenta">
+            <image zoom-level="100" resource="PNG/handle_h_magenta_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_h_magenta_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_h_magenta_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-v-magenta">
+            <image zoom-level="100" resource="PNG/handle_v_magenta_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_v_magenta_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_v_magenta_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-h-pink">
+            <image zoom-level="100" resource="PNG/handle_h_pink_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_h_pink_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_h_pink_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-v-pink">
+            <image zoom-level="100" resource="PNG/handle_v_pink_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_v_pink_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_v_pink_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-h-rose">
+            <image zoom-level="100" resource="PNG/handle_h_rose_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_h_rose_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_h_rose_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-v-rose">
+            <image zoom-level="100" resource="PNG/handle_v_rose_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_v_rose_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_v_rose_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-h-coral">
+            <image zoom-level="100" resource="PNG/handle_h_coral_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_h_coral_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_h_coral_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-v-coral">
+            <image zoom-level="100" resource="PNG/handle_v_coral_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_v_coral_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_v_coral_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-h-gold">
+            <image zoom-level="100" resource="PNG/handle_h_gold_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_h_gold_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_h_gold_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-v-gold">
+            <image zoom-level="100" resource="PNG/handle_v_gold_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_v_gold_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_v_gold_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-h-mint">
+            <image zoom-level="100" resource="PNG/handle_h_mint_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_h_mint_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_h_mint_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-v-mint">
+            <image zoom-level="100" resource="PNG/handle_v_mint_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_v_mint_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_v_mint_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-h-pearl">
+            <image zoom-level="100" resource="PNG/handle_h_pearl_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_h_pearl_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_h_pearl_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-v-pearl">
+            <image zoom-level="100" resource="PNG/handle_v_pearl_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_v_pearl_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_v_pearl_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-h-hover">
+            <image zoom-level="100" resource="PNG/handle_h_hover_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_h_hover_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_h_hover_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-h-sync">
+            <image zoom-level="100" resource="PNG/handle_h_sync_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_h_sync_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_h_sync_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-h-sync-hover">
+            <image zoom-level="100" resource="PNG/handle_h_sync_hover_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_h_sync_hover_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_h_sync_hover_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-v-hover">
+            <image zoom-level="100" resource="PNG/handle_v_hover_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_v_hover_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_v_hover_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-v-sync">
+            <image zoom-level="100" resource="PNG/handle_v_sync_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_v_sync_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_v_sync_400.png"/>
+        </multi-image>
+        <multi-image id="aurora-handle-v-sync-hover">
+            <image zoom-level="100" resource="PNG/handle_v_sync_hover_100.png"/>
+            <image zoom-level="200" resource="PNG/handle_v_sync_hover_200.png"/>
+            <image zoom-level="400" resource="PNG/handle_v_sync_hover_400.png"/>
+        </multi-image>
+
+        <background image="aurora-bg"/>
+
         <image id="TEMPOSYNC_HORIZONTAL_OVERLAY" resource="SVG/bmpTS00153.svg"/>
         <image id="TEMPOSYNC_VERTICAL_OVERLAY" resource="SVG/bmpTS00157.svg"/>
 
@@ -347,6 +496,28 @@
     </globals>
 
     <component-classes>
+        <class name="aurora-h-cyan" parent="Slider" handle_image="aurora-handle-h-cyan" handle_hover_image="aurora-handle-h-hover" handle_temposync_image="aurora-handle-h-sync" handle_temposync_hover_image="aurora-handle-h-sync-hover" value_fill_color="#3DE8FF"/>
+        <class name="aurora-v-cyan" parent="Slider" handle_image="aurora-handle-v-cyan" handle_hover_image="aurora-handle-v-hover" handle_temposync_image="aurora-handle-v-sync" handle_temposync_hover_image="aurora-handle-v-sync-hover" value_fill_color="#3DE8FF"/>
+        <class name="aurora-h-sky" parent="Slider" handle_image="aurora-handle-h-sky" handle_hover_image="aurora-handle-h-hover" handle_temposync_image="aurora-handle-h-sync" handle_temposync_hover_image="aurora-handle-h-sync-hover" value_fill_color="#4FB8FF"/>
+        <class name="aurora-v-sky" parent="Slider" handle_image="aurora-handle-v-sky" handle_hover_image="aurora-handle-v-hover" handle_temposync_image="aurora-handle-v-sync" handle_temposync_hover_image="aurora-handle-v-sync-hover" value_fill_color="#4FB8FF"/>
+        <class name="aurora-h-azure" parent="Slider" handle_image="aurora-handle-h-azure" handle_hover_image="aurora-handle-h-hover" handle_temposync_image="aurora-handle-h-sync" handle_temposync_hover_image="aurora-handle-h-sync-hover" value_fill_color="#7B8CFF"/>
+        <class name="aurora-v-azure" parent="Slider" handle_image="aurora-handle-v-azure" handle_hover_image="aurora-handle-v-hover" handle_temposync_image="aurora-handle-v-sync" handle_temposync_hover_image="aurora-handle-v-sync-hover" value_fill_color="#7B8CFF"/>
+        <class name="aurora-h-violet" parent="Slider" handle_image="aurora-handle-h-violet" handle_hover_image="aurora-handle-h-hover" handle_temposync_image="aurora-handle-h-sync" handle_temposync_hover_image="aurora-handle-h-sync-hover" value_fill_color="#A97CFF"/>
+        <class name="aurora-v-violet" parent="Slider" handle_image="aurora-handle-v-violet" handle_hover_image="aurora-handle-v-hover" handle_temposync_image="aurora-handle-v-sync" handle_temposync_hover_image="aurora-handle-v-sync-hover" value_fill_color="#A97CFF"/>
+        <class name="aurora-h-magenta" parent="Slider" handle_image="aurora-handle-h-magenta" handle_hover_image="aurora-handle-h-hover" handle_temposync_image="aurora-handle-h-sync" handle_temposync_hover_image="aurora-handle-h-sync-hover" value_fill_color="#E663FF"/>
+        <class name="aurora-v-magenta" parent="Slider" handle_image="aurora-handle-v-magenta" handle_hover_image="aurora-handle-v-hover" handle_temposync_image="aurora-handle-v-sync" handle_temposync_hover_image="aurora-handle-v-sync-hover" value_fill_color="#E663FF"/>
+        <class name="aurora-h-pink" parent="Slider" handle_image="aurora-handle-h-pink" handle_hover_image="aurora-handle-h-hover" handle_temposync_image="aurora-handle-h-sync" handle_temposync_hover_image="aurora-handle-h-sync-hover" value_fill_color="#FF4FB8"/>
+        <class name="aurora-v-pink" parent="Slider" handle_image="aurora-handle-v-pink" handle_hover_image="aurora-handle-v-hover" handle_temposync_image="aurora-handle-v-sync" handle_temposync_hover_image="aurora-handle-v-sync-hover" value_fill_color="#FF4FB8"/>
+        <class name="aurora-h-rose" parent="Slider" handle_image="aurora-handle-h-rose" handle_hover_image="aurora-handle-h-hover" handle_temposync_image="aurora-handle-h-sync" handle_temposync_hover_image="aurora-handle-h-sync-hover" value_fill_color="#FF6F91"/>
+        <class name="aurora-v-rose" parent="Slider" handle_image="aurora-handle-v-rose" handle_hover_image="aurora-handle-v-hover" handle_temposync_image="aurora-handle-v-sync" handle_temposync_hover_image="aurora-handle-v-sync-hover" value_fill_color="#FF6F91"/>
+        <class name="aurora-h-coral" parent="Slider" handle_image="aurora-handle-h-coral" handle_hover_image="aurora-handle-h-hover" handle_temposync_image="aurora-handle-h-sync" handle_temposync_hover_image="aurora-handle-h-sync-hover" value_fill_color="#FF9A5C"/>
+        <class name="aurora-v-coral" parent="Slider" handle_image="aurora-handle-v-coral" handle_hover_image="aurora-handle-v-hover" handle_temposync_image="aurora-handle-v-sync" handle_temposync_hover_image="aurora-handle-v-sync-hover" value_fill_color="#FF9A5C"/>
+        <class name="aurora-h-gold" parent="Slider" handle_image="aurora-handle-h-gold" handle_hover_image="aurora-handle-h-hover" handle_temposync_image="aurora-handle-h-sync" handle_temposync_hover_image="aurora-handle-h-sync-hover" value_fill_color="#FFC94D"/>
+        <class name="aurora-v-gold" parent="Slider" handle_image="aurora-handle-v-gold" handle_hover_image="aurora-handle-v-hover" handle_temposync_image="aurora-handle-v-sync" handle_temposync_hover_image="aurora-handle-v-sync-hover" value_fill_color="#FFC94D"/>
+        <class name="aurora-h-mint" parent="Slider" handle_image="aurora-handle-h-mint" handle_hover_image="aurora-handle-h-hover" handle_temposync_image="aurora-handle-h-sync" handle_temposync_hover_image="aurora-handle-h-sync-hover" value_fill_color="#4DFFB4"/>
+        <class name="aurora-v-mint" parent="Slider" handle_image="aurora-handle-v-mint" handle_hover_image="aurora-handle-v-hover" handle_temposync_image="aurora-handle-v-sync" handle_temposync_hover_image="aurora-handle-v-sync-hover" value_fill_color="#4DFFB4"/>
+        <class name="aurora-h-pearl" parent="Slider" handle_image="aurora-handle-h-pearl" handle_hover_image="aurora-handle-h-hover" handle_temposync_image="aurora-handle-h-sync" handle_temposync_hover_image="aurora-handle-h-sync-hover" value_fill_color="#E6E0FF"/>
+        <class name="aurora-v-pearl" parent="Slider" handle_image="aurora-handle-v-pearl" handle_hover_image="aurora-handle-v-hover" handle_temposync_image="aurora-handle-v-sync" handle_temposync_hover_image="aurora-handle-v-sync-hover" value_fill_color="#E6E0FF"/>
         <class name="mod-hslider" parent="Slider" handle_image="mod-norm-h" handle_hover_image="mod-hover-h"
                handle_temposync_image="mod-ts-h"/>
         <class name="mod-vslider" parent="Slider" handle_image="mod-norm-v" handle_hover_image="mod-hover-v"
@@ -357,35 +528,35 @@
 
     <controls>
         <!-- Global & Scene -->
-        <control ui_identifier="global.volume" class="def-hslider" x="756"/>
+        <control ui_identifier="global.volume" x="756" class="aurora-h-pearl"/>
 
         <control ui_identifier="controls.vu_meter" x="763"/>
 
-        <control ui_identifier="global.fx1_return" x="759"/>
-        <control ui_identifier="global.fx2_return" x="759"/>
-        <control ui_identifier="global.fx3_return" x="759"/>
-        <control ui_identifier="global.fx4_return" x="759"/>
+        <control ui_identifier="global.fx1_return" x="759" class="aurora-h-mint"/>
+        <control ui_identifier="global.fx2_return" x="759" class="aurora-h-mint"/>
+        <control ui_identifier="global.fx3_return" x="759" class="aurora-h-mint"/>
+        <control ui_identifier="global.fx4_return" x="759" class="aurora-h-mint"/>
 
-        <control ui_identifier="scene.drift" class="def-hslider"/>
-        <control ui_identifier="scene.noise_color" class="def-hslider"/>
+        <control ui_identifier="scene.drift" class="aurora-h-sky"/>
+        <control ui_identifier="scene.noise_color" class="aurora-h-sky"/>
 
-        <control ui_identifier="scene.fmdepth" class="def-hslider" y="162"/>
+        <control ui_identifier="scene.fmdepth" y="162" class="aurora-h-azure"/>
 
-        <control ui_identifier="scene.volume" class="def-hslider"/>
-        <control ui_identifier="scene.pan" class="def-hslider"/>
-        <control ui_identifier="scene.width" class="def-hslider"/>
-        <control ui_identifier="scene.send_fx_1" class="def-hslider"/>
-        <control ui_identifier="scene.send_fx_2" class="def-hslider"/>
-        <control ui_identifier="scene.send_fx_3" class="def-hslider"/>
-        <control ui_identifier="scene.send_fx_4" class="def-hslider"/>
+        <control ui_identifier="scene.volume" class="aurora-h-magenta"/>
+        <control ui_identifier="scene.pan" class="aurora-h-magenta"/>
+        <control ui_identifier="scene.width" class="aurora-h-magenta"/>
+        <control ui_identifier="scene.send_fx_1" class="aurora-h-magenta"/>
+        <control ui_identifier="scene.send_fx_2" class="aurora-h-magenta"/>
+        <control ui_identifier="scene.send_fx_3" class="aurora-h-magenta"/>
+        <control ui_identifier="scene.send_fx_4" class="aurora-h-magenta"/>
 
-        <control ui_identifier="scene.portamento" class="def-hslider"/>
-        <control ui_identifier="scene.pitch" class="def-hslider"/>
+        <control ui_identifier="scene.portamento" class="aurora-h-sky"/>
+        <control ui_identifier="scene.pitch" class="aurora-h-sky"/>
 
         <control ui_identifier="scene.fmrouting" y="88"/>
 
-        <control ui_identifier="scene.gain" y="301"/>
-        <control ui_identifier="scene.velocity_sensitivity" y="301"/>
+        <control ui_identifier="scene.gain" y="301" class="aurora-v-coral"/>
+        <control ui_identifier="scene.velocity_sensitivity" y="301" class="aurora-v-coral"/>
 
         <control ui_identifier="controls.surge_menu" x="850"/>
 
@@ -405,14 +576,14 @@
         <control ui_identifier="osc.type" x="96" y="194" w="49" h="18"/>
         <control ui_identifier="osc.select" x="66" y="61" w="75" h="13"/>
 
-        <control ui_identifier="osc.pitch" class="def-hslider"/>
-        <control ui_identifier="osc.param_1" class="def-hslider"/>
-        <control ui_identifier="osc.param_2" class="def-hslider"/>
-        <control ui_identifier="osc.param_3" class="def-hslider"/>
-        <control ui_identifier="osc.param_4" class="def-hslider"/>
-        <control ui_identifier="osc.param_5" class="def-hslider"/>
-        <control ui_identifier="osc.param_6" class="def-hslider"/>
-        <control ui_identifier="osc.param_7" class="def-hslider"/>
+        <control ui_identifier="osc.pitch" class="aurora-h-cyan"/>
+        <control ui_identifier="osc.param_1" class="aurora-h-cyan"/>
+        <control ui_identifier="osc.param_2" class="aurora-h-cyan"/>
+        <control ui_identifier="osc.param_3" class="aurora-h-cyan"/>
+        <control ui_identifier="osc.param_4" class="aurora-h-cyan"/>
+        <control ui_identifier="osc.param_5" class="aurora-h-cyan"/>
+        <control ui_identifier="osc.param_6" class="aurora-h-cyan"/>
+        <control ui_identifier="osc.param_7" class="aurora-h-cyan"/>
 
         <!-- Mixer -->
         <control ui_identifier="mixer.mute_o1" x="1" y="2" w="18" h="11"/>
@@ -436,13 +607,13 @@
         <control ui_identifier="mixer.route_ring23" x="82" y="28" w="16" h="9"/>
         <control ui_identifier="mixer.route_noise" x="102" y="28" w="16" h="9"/>
 
-        <control ui_identifier="mixer.level_o1" y="38"/>
-        <control ui_identifier="mixer.level_o2" y="38"/>
-        <control ui_identifier="mixer.level_o3" y="38"/>
-        <control ui_identifier="mixer.level_ring12" y="38"/>
-        <control ui_identifier="mixer.level_ring23" y="38"/>
-        <control ui_identifier="mixer.level_noise" y="38"/>
-        <control ui_identifier="mixer.level_prefiltergain" y="38"/>
+        <control ui_identifier="mixer.level_o1" y="38" class="aurora-v-cyan"/>
+        <control ui_identifier="mixer.level_o2" y="38" class="aurora-v-cyan"/>
+        <control ui_identifier="mixer.level_o3" y="38" class="aurora-v-cyan"/>
+        <control ui_identifier="mixer.level_ring12" y="38" class="aurora-v-cyan"/>
+        <control ui_identifier="mixer.level_ring23" y="38" class="aurora-v-cyan"/>
+        <control ui_identifier="mixer.level_noise" y="38" class="aurora-v-cyan"/>
+        <control ui_identifier="mixer.level_prefiltergain" y="38" class="aurora-v-cyan"/>
 
         <!-- Filter -->
         <control ui_identifier="filter.config" y="88" h="53"/>
@@ -452,22 +623,22 @@
         <control ui_identifier="filter.type_2" x="605" y="191"/>
         <control ui_identifier="filter.subtype_2" x="732" y="194"/>
 
-        <control ui_identifier="filter.cutoff_1" class="def-hslider"/>
-        <control ui_identifier="filter.resonance_1" class="def-hslider"/>
-        <control ui_identifier="filter.cutoff_2" class="def-hslider"/>
-        <control ui_identifier="filter.resonance_2" class="def-hslider"/>
-        <control ui_identifier="filter.balance" class="def-hslider"/>
-        <control ui_identifier="filter.feedback" class="def-hslider" y="162"/>
+        <control ui_identifier="filter.cutoff_1" class="aurora-h-violet"/>
+        <control ui_identifier="filter.resonance_1" class="aurora-h-violet"/>
+        <control ui_identifier="filter.cutoff_2" class="aurora-h-pink"/>
+        <control ui_identifier="filter.resonance_2" class="aurora-h-pink"/>
+        <control ui_identifier="filter.balance" class="aurora-h-magenta"/>
+        <control ui_identifier="filter.feedback" y="162" class="aurora-h-violet"/>
 
-        <control ui_identifier="filter.envmod_1" x="551" y="301"/>
-        <control ui_identifier="filter.envmod_2" x="571" y="301"/>
+        <control ui_identifier="filter.envmod_1" x="551" y="301" class="aurora-v-rose"/>
+        <control ui_identifier="filter.envmod_2" x="571" y="301" class="aurora-v-rose"/>
 
         <!-- Keytrack & Waveshaper -->
         <control ui_identifier="scene.keytrack_root" x="310" y="265"/>
-        <control ui_identifier="filter.keytrack_1" y="301"/>
-        <control ui_identifier="filter.keytrack_2" y="301"/>
-        <control ui_identifier="filter.highpass" y="301"/>
-        <control ui_identifier="filter.waveshaper_drive" y="301"/>
+        <control ui_identifier="filter.keytrack_1" y="301" class="aurora-v-pink"/>
+        <control ui_identifier="filter.keytrack_2" y="301" class="aurora-v-pink"/>
+        <control ui_identifier="filter.highpass" y="301" class="aurora-v-pink"/>
+        <control ui_identifier="filter.waveshaper_drive" y="301" class="aurora-v-pink"/>
         <control ui_identifier="filter.waveshaper_type" x="384"/>
         <control ui_identifier="filter.waveshaper_prevnext" x="385"/>
         <control ui_identifier="filter.waveshaper_preview" x="406"/>
@@ -478,36 +649,36 @@
         <control ui_identifier="feg.attack_shape" x="1"/>
         <control ui_identifier="feg.decay_shape" x="21"/>
         <control ui_identifier="feg.release_shape" x="61"/>
-        <control ui_identifier="feg.attack" x="-3" y="35"/>
-        <control ui_identifier="feg.decay" x="17" y="35"/>
-        <control ui_identifier="feg.sustain" x="37" y="35"/>
-        <control ui_identifier="feg.release" x="57" y="35"/>
+        <control ui_identifier="feg.attack" x="-3" y="35" class="aurora-v-rose"/>
+        <control ui_identifier="feg.decay" x="17" y="35" class="aurora-v-rose"/>
+        <control ui_identifier="feg.sustain" x="37" y="35" class="aurora-v-rose"/>
+        <control ui_identifier="feg.release" x="57" y="35" class="aurora-v-rose"/>
 
         <!-- AEG -->
         <control ui_identifier="aeg.panel" y="266"/>
         <control ui_identifier="aeg.attack_shape" x="1"/>
         <control ui_identifier="aeg.decay_shape" x="21"/>
         <control ui_identifier="aeg.release_shape" x="61"/>
-        <control ui_identifier="aeg.attack" x="-3" y="35"/>
-        <control ui_identifier="aeg.decay" x="17" y="35"/>
-        <control ui_identifier="aeg.sustain" x="37" y="35"/>
-        <control ui_identifier="aeg.release" x="57" y="35"/>
+        <control ui_identifier="aeg.attack" x="-3" y="35" class="aurora-v-coral"/>
+        <control ui_identifier="aeg.decay" x="17" y="35" class="aurora-v-coral"/>
+        <control ui_identifier="aeg.sustain" x="37" y="35" class="aurora-v-coral"/>
+        <control ui_identifier="aeg.release" x="57" y="35" class="aurora-v-coral"/>
 
         <!-- Modulation Panel -->
         <control ui_identifier="controls.modulation.panel" x="3" y="401"/>
 
         <!-- LFO -->
-        <control ui_identifier="lfo.rate" class="mod-hslider"/>
-        <control ui_identifier="lfo.phase" class="mod-hslider"/>
-        <control ui_identifier="lfo.deform" class="mod-hslider"/>
-        <control ui_identifier="lfo.amplitude" class="mod-hslider"/>
+        <control ui_identifier="lfo.rate" class="aurora-h-gold"/>
+        <control ui_identifier="lfo.phase" class="aurora-h-gold"/>
+        <control ui_identifier="lfo.deform" class="aurora-h-gold"/>
+        <control ui_identifier="lfo.amplitude" class="aurora-h-gold"/>
 
-        <control ui_identifier="lfo.delay" class="mod-vslider"/>
-        <control ui_identifier="lfo.attack" class="mod-vslider"/>
-        <control ui_identifier="lfo.hold" class="mod-vslider"/>
-        <control ui_identifier="lfo.decay" class="mod-vslider"/>
-        <control ui_identifier="lfo.sustain" class="mod-vslider"/>
-        <control ui_identifier="lfo.release" class="mod-vslider"/>
+        <control ui_identifier="lfo.delay" class="aurora-v-gold"/>
+        <control ui_identifier="lfo.attack" class="aurora-v-gold"/>
+        <control ui_identifier="lfo.hold" class="aurora-v-gold"/>
+        <control ui_identifier="lfo.decay" class="aurora-v-gold"/>
+        <control ui_identifier="lfo.sustain" class="aurora-v-gold"/>
+        <control ui_identifier="lfo.release" class="aurora-v-gold"/>
 
         <control ui_identifier="lfo.main.panel" y="477"/>
 
@@ -538,5 +709,17 @@
         <control ui_identifier="filter.filter_analysis.window" x="298" y="261" h="211"/>
         <control ui_identifier="filter.waveshaper_analysis.window" x="449" y="238"/>
         <control ui_identifier="oscilloscope.window" x="149" y="56" w="600" h="343"/>
+        <control ui_identifier="fx.param_1" class="aurora-h-mint"/>
+        <control ui_identifier="fx.param_2" class="aurora-h-mint"/>
+        <control ui_identifier="fx.param_3" class="aurora-h-mint"/>
+        <control ui_identifier="fx.param_4" class="aurora-h-mint"/>
+        <control ui_identifier="fx.param_5" class="aurora-h-mint"/>
+        <control ui_identifier="fx.param_6" class="aurora-h-mint"/>
+        <control ui_identifier="fx.param_7" class="aurora-h-mint"/>
+        <control ui_identifier="fx.param_8" class="aurora-h-mint"/>
+        <control ui_identifier="fx.param_9" class="aurora-h-mint"/>
+        <control ui_identifier="fx.param_10" class="aurora-h-mint"/>
+        <control ui_identifier="fx.param_11" class="aurora-h-mint"/>
+        <control ui_identifier="fx.param_12" class="aurora-h-mint"/>
     </controls>
 </surge-skin>

@@ -1,8 +1,8 @@
 <svg width="11" height="22" viewBox="0 0 11 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="2.5" y="2.5" width="6" height="6" rx="0.25" fill="#FF29B1"/>
+<rect x="2.5" y="2.5" width="6" height="6" rx="0.25" fill="url(#aurora_on)"/>
 <rect x="2.5" y="2.5" width="6" height="6" rx="0.25" stroke="#FF29B1"/>
 <path fill-rule="evenodd" clip-rule="evenodd" d="M6.2751 3L3.40025 5.84901L5.12516 7.55842L8 4.70941L6.2751 3ZM4.62627 8L3 6.38824V8H4.62627Z" fill="#07061A"/>
-<rect x="1.5" y="12.5" width="8" height="8" rx="1" fill="#4DD3FF"/>
+<rect x="1.5" y="12.5" width="8" height="8" rx="1" fill="url(#aurora_cyan)"/>
 <rect x="1.5" y="12.5" width="8" height="8" rx="1" stroke="#FFFFFF"/>
 <path fill-rule="evenodd" clip-rule="evenodd" d="M6.2751 14L3.40025 16.849L5.12516 18.5584L8 15.7094L6.2751 14ZM4.62627 19L3 17.3882V19H4.62627Z" fill="#FFFFFF"/>
-</svg>
+<defs><linearGradient id="aurora_on" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC2EA"/><stop offset="0.45" stop-color="#FF4FB8"/><stop offset="1" stop-color="#C42887"/></linearGradient><linearGradient id="aurora_face" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2E2868"/><stop offset="1" stop-color="#110E31"/></linearGradient><linearGradient id="aurora_cyan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B8F7FF"/><stop offset="0.45" stop-color="#3DC8F0"/><stop offset="1" stop-color="#1A6FA8"/></linearGradient></defs></svg>

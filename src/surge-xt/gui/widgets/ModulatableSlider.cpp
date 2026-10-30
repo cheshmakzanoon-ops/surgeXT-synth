@@ -194,6 +194,42 @@ void ModulatableSlider::paint(juce::Graphics &g)
         pTray->draw(g, activationOpacity, t);
     }
 
+    // Draw the value fill, which brightens from the zero point towards the handle
+    if (drawValueFill)
+    {
+        float x0, y0, x1, y1;
+
+        if (orientation == ParamConfig::kVertical)
+        {
+            x0 = x1 = handleCX + 1;
+            y0 = handleY0 + (isBipolarFn() ? 0.5f : 1.f) * range;
+            y1 = handleCY;
+        }
+        else
+        {
+            y0 = y1 = handleCY + 1;
+            x0 = handleX0 + (isBipolarFn() ? 0.5f : 0.f) * range;
+            x1 = handleCX;
+        }
+
+        auto line = juce::Line<float>(x0, y0, x1, y1);
+
+        if (line.getLength() > 0.5f)
+        {
+            juce::Graphics::ScopedSaveState gs(g);
+            g.addTransform(trayPosition);
+
+            auto c = valueFillColour.withMultipliedAlpha(activationOpacity);
+
+            g.setGradientFill(juce::ColourGradient(c.withMultipliedAlpha(0.f), x0, y0,
+                                                   c.withMultipliedAlpha(0.35f), x1, y1, false));
+            g.drawLine(line, 6.f);
+            g.setGradientFill(
+                juce::ColourGradient(c.withMultipliedAlpha(0.45f), x0, y0, c, x1, y1, false));
+            g.drawLine(line, 2.f);
+        }
+    }
+
     // Draw the modulation bar
     if (isEditingModulation)
     {
@@ -377,6 +413,18 @@ void ModulatableSlider::onSkinChanged()
         if (hth.has_value())
         {
             pTempoSyncHoverHandle = associatedBitmapStore->getImageByStringID(*hth);
+        }
+    }
+
+    drawValueFill = false;
+
+    if (skinControl.get())
+    {
+        auto vf = skin->propertyValue(skinControl, Surge::Skin::Component::VALUE_FILL_COLOR);
+        if (vf.has_value() && !vf->empty())
+        {
+            valueFillColour = skin->getColor(*vf, juce::Colours::transparentBlack);
+            drawValueFill = valueFillColour.getAlpha() > 0;
         }
     }
 

@@ -9,6 +9,7 @@ on:
       - "resources/data/skins/aurora.surge-skin/**"
       - "scripts/aurora-skin/**"
       - "src/surge-xt/gui/**"
+      - "src/common/Skin*"
       - ".github/workflows/ui-screenshot.yml"
   workflow_dispatch:
 
@@ -29,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SCREENSHOT: doc/screenshots/surge-xt-aurora.png
+      HERO: doc/screenshots/surge-xt-aurora-hero.png
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v6
@@ -55,22 +57,31 @@ jobs:
           mkdir -p "$(dirname "$SCREENSHOT")"
           scripts/aurora-skin/screenshot.sh "build/surge_xt_products/Surge XT" "$SCREENSHOT" 200 "Pads/Communication"
 
-      - name: "Upload the screenshot"
+      - name: "Compose the hero image"
+        run: |
+          npm install --no-save --prefix "$RUNNER_TEMP/hero" playwright@1.63.0
+          export NODE_PATH="$RUNNER_TEMP/hero/node_modules"
+          "$NODE_PATH/.bin/playwright" install --with-deps chromium
+          node scripts/aurora-skin/make_hero.js "$SCREENSHOT" "$HERO"
+
+      - name: "Upload the screenshots"
         uses: actions/upload-artifact@v4
         with:
           name: surge-xt-ui-screenshot
-          path: ${{ env.SCREENSHOT }}
+          path: |
+            ${{ env.SCREENSHOT }}
+            ${{ env.HERO }}
 
       - name: "Commit the screenshot"
         if: github.ref_type == 'branch'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "$SCREENSHOT"
+          git add "$SCREENSHOT" "$HERO"
           if git diff --cached --quiet; then
             echo "Screenshot unchanged"
             exit 0
           fi
-          git commit -m "Update the UI screenshot"
+          git commit -m "Update the UI screenshots"
           git pull --rebase origin "$GITHUB_REF_NAME"
           git push origin "HEAD:$GITHUB_REF_NAME"

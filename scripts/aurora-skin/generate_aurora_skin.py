@@ -2,30 +2,32 @@
 """
 Generates the Aurora skin (resources/data/skins/aurora.surge-skin).
 
-Aurora keeps the control layout of the Surge Dark skin but replaces its look:
-a deep indigo night sky with soft aurora light behind translucent glass panels,
-a colour spectrum that flows across the sections (cyan oscillators through
-violet filters, rose and coral envelopes, golden modulators and mint effects),
-glowing slider handles and an indigo/magenta/cyan widget palette.
+Aurora keeps the control layout of the Surge Dark skin and redesigns everything
+you see. The instrument is a set of frosted glass tiles floating over an aurora
+lit night sky, each edge lit in the colour of its section, with recessed
+holographic displays and light pipes that show the signal flow. Slider handles
+are jewels in chrome bezels in their section's colour, and sliders draw their
+value as a glowing fill.
 
-Every widget sprite is derived from the Dark skin by remapping its palette, so
-re-running this script after the Dark skin changes keeps both in step. The
-background, slider handles and skin.xml colours are generated from scratch.
+The background and handles are drawn in HTML/CSS (aurora_art.py) and rendered
+to 100/200/400% PNGs with Chromium. The other widget sprites come from the Dark
+skin with their palette remapped and their buttons sculpted with gradients, so
+re-running this script after the Dark skin changes keeps both in step.
 
 Usage: python3 scripts/aurora-skin/generate_aurora_skin.py
-Requires: fontTools (pip install fonttools)
+Requires: Node.js with Playwright and Chromium (npm install playwright)
 """
 
 import colorsys
-import math
-import random
+import json
 import re
 import shutil
+import subprocess
+import tempfile
 from pathlib import Path
 
-from fontTools.pens.svgPathPen import SVGPathPen
-from fontTools.pens.transformPen import TransformPen
-from fontTools.ttLib import TTFont
+import aurora_art
+
 
 ROOT = Path(__file__).resolve().parents[2]
 SKINS = ROOT / "resources" / "data" / "skins"
@@ -125,329 +127,8 @@ def remap(hexcol):
     return hexcol
 
 
-# ---------------------------------------------------------------------------
-# Text as outlines (the SVG renderer has no font fallback, so we draw glyphs)
-# ---------------------------------------------------------------------------
-
-
-class Outliner:
-    def __init__(self, path):
-        self.font = TTFont(path)
-        self.glyphs = self.font.getGlyphSet()
-        self.cmap = self.font.getBestCmap()
-        self.upm = self.font["head"].unitsPerEm
-        self.hmtx = self.font["hmtx"]
-
-    def _advance(self, ch, size):
-        return self.hmtx[self.cmap[ord(ch)]][0] * size / self.upm
-
-    def width(self, text, size, tracking=0.0):
-        if not text:
-            return 0
-        return sum(self._advance(c, size) for c in text) + tracking * size * (len(text) - 1)
-
-    def path(self, text, x, y, size, tracking=0.0, anchor="start"):
-        w = self.width(text, size, tracking)
-        if anchor == "middle":
-            x -= w / 2
-        elif anchor == "end":
-            x -= w
-        scale = size / self.upm
-        ds = []
-        for ch in text:
-            gname = self.cmap[ord(ch)]
-            pen = SVGPathPen(self.glyphs, ntos=lambda v: f"{v:.2f}".rstrip("0").rstrip("."))
-            self.glyphs[gname].draw(TransformPen(pen, (scale, 0, 0, -scale, x, y)))
-            ds.append(pen.getCommands())
-            x += self._advance(ch, size) + tracking * size
-        return " ".join(d for d in ds if d)
-
-
-# ---------------------------------------------------------------------------
-# SVG building helpers
-# ---------------------------------------------------------------------------
-
-
 def f(v):
     return f"{v:.2f}".rstrip("0").rstrip(".")
-
-
-class Svg:
-    def __init__(self, w, h):
-        self.w, self.h = w, h
-        self.defs = []
-        self.body = []
-        self._n = 0
-
-    def uid(self, p):
-        self._n += 1
-        return f"{p}{self._n}"
-
-    def linear(self, x1, y1, x2, y2, stops):
-        gid = self.uid("lg")
-        st = "".join(
-            f'<stop offset="{f(o)}" stop-color="{c}" stop-opacity="{f(a)}"/>' for o, c, a in stops
-        )
-        self.defs.append(
-            f'<linearGradient id="{gid}" x1="{f(x1)}" y1="{f(y1)}" x2="{f(x2)}" y2="{f(y2)}" '
-            f'gradientUnits="userSpaceOnUse">{st}</linearGradient>'
-        )
-        return f"url(#{gid})"
-
-    def radial(self, cx, cy, r, stops):
-        gid = self.uid("rg")
-        st = "".join(
-            f'<stop offset="{f(o)}" stop-color="{c}" stop-opacity="{f(a)}"/>' for o, c, a in stops
-        )
-        self.defs.append(
-            f'<radialGradient id="{gid}" cx="{f(cx)}" cy="{f(cy)}" r="{f(r)}" '
-            f'gradientUnits="userSpaceOnUse">{st}</radialGradient>'
-        )
-        return f"url(#{gid})"
-
-    def add(self, s):
-        self.body.append(s)
-
-    def rect(self, x, y, w, h, fill, rx=0, opacity=1.0, stroke=None, sw=1.0):
-        s = f'<rect x="{f(x)}" y="{f(y)}" width="{f(w)}" height="{f(h)}"'
-        if rx:
-            s += f' rx="{f(rx)}"'
-        s += f' fill="{fill}"'
-        if opacity != 1.0:
-            s += f' fill-opacity="{f(opacity)}"'
-        if stroke:
-            s += f' stroke="{stroke}" stroke-width="{f(sw)}"'
-        self.add(s + "/>")
-
-    def circle(self, cx, cy, r, fill, opacity=1.0):
-        s = f'<circle cx="{f(cx)}" cy="{f(cy)}" r="{f(r)}" fill="{fill}"'
-        if opacity != 1.0:
-            s += f' fill-opacity="{f(opacity)}"'
-        self.add(s + "/>")
-
-    def path(self, d, fill="none", stroke=None, sw=1.0, opacity=1.0):
-        s = f'<path d="{d}" fill="{fill}"'
-        if opacity != 1.0:
-            s += f' opacity="{f(opacity)}"'
-        if stroke:
-            s += f' stroke="{stroke}" stroke-width="{f(sw)}" stroke-linecap="round"'
-        self.add(s + "/>")
-
-    def render(self):
-        return (
-            f'<svg width="{self.w}" height="{self.h}" viewBox="0 0 {self.w} {self.h}" '
-            f'fill="none" xmlns="http://www.w3.org/2000/svg">\n'
-            + "\n".join(self.body)
-            + "\n<defs>\n"
-            + "\n".join(self.defs)
-            + "\n</defs>\n</svg>\n"
-        )
-
-
-def rounded_top(x, y, w, h, r):
-    return (
-        f"M{f(x)} {f(y + h)}V{f(y + r)}Q{f(x)} {f(y)} {f(x + r)} {f(y)}"
-        f"H{f(x + w - r)}Q{f(x + w)} {f(y)} {f(x + w)} {f(y + r)}V{f(y + h)}Z"
-    )
-
-
-def triangle(cx, cy, size, direction):
-    s = size
-    if direction == "left":
-        return f"M{f(cx + s * 0.5)} {f(cy - s * 0.6)}L{f(cx - s * 0.5)} {f(cy)}L{f(cx + s * 0.5)} {f(cy + s * 0.6)}Z"
-    return f"M{f(cx - s * 0.5)} {f(cy - s * 0.6)}L{f(cx + s * 0.5)} {f(cy)}L{f(cx - s * 0.5)} {f(cy + s * 0.6)}Z"
-
-
-# ---------------------------------------------------------------------------
-# The main background
-# ---------------------------------------------------------------------------
-
-
-def build_background(heading, label):
-    s = Svg(W, H)
-
-    # Night sky with aurora light
-    s.rect(0, 0, W, H, s.linear(0, 0, W, H, [(0, "#1A1142", 1), (0.45, "#0C0A28", 1), (1, "#060518", 1)]))
-    for cx, cy, r, col, a in [
-        (820, -20, 430, "#FF3DCB", 0.42),
-        (470, 250, 470, "#6A3DFF", 0.30),
-        (-40, 560, 420, "#00D5FF", 0.30),
-        (930, 600, 330, "#FF9F43", 0.22),
-        (180, 40, 300, "#3D7BFF", 0.26),
-    ]:
-        s.circle(cx, cy, r, s.radial(cx, cy, r, [(0, col, a), (0.55, col, a * 0.35), (1, col, 0)]))
-
-    rnd = random.Random(8675309)
-    for _ in range(140):
-        x, y = rnd.uniform(0, W), rnd.uniform(0, H)
-        r = rnd.choice([0.35, 0.45, 0.55, 0.7, 0.9])
-        s.circle(x, y, r, "#FFFFFF", rnd.uniform(0.15, 0.75))
-
-    # Header glass and the spectrum horizon line
-    s.rect(0, 0, W, 56, s.linear(0, 0, 0, 56, [(0, "#0A0820", 0.55), (1, "#140F36", 0.75)]))
-    spectrum = s.linear(0, 0, W, 0, [(o, c, 1) for o, c in SPECTRUM])
-    s.rect(0, 55.25, W, 1.5, spectrum)
-    s.rect(0, 56.75, W, 3, s.linear(0, 56.75, 0, 59.75, [(0, "#FFFFFF", 0.10), (1, "#FFFFFF", 0)]))
-
-    def panel(x0, y0, x1, y1, accent, header=None, r=7, fill_opacity=0.80):
-        w, h = x1 - x0, y1 - y0
-        s.rect(x0 + 0.5, y0 + 1.5, w, h, "#000000", rx=r, opacity=0.35)  # soft drop
-        s.rect(x0, y0, w, h, s.linear(0, y0, 0, y1, [(0, "#1A1642", 1), (1, "#110E2E", 1)]),
-               rx=r, opacity=fill_opacity)
-        # Inner accent bloom in the upper corner
-        s.rect(x0, y0, w, h, s.radial(x0 + w * 0.5, y0, max(w, h) * 0.9,
-                                      [(0, accent, 0.15), (1, accent, 0)]), rx=r)
-        if header:
-            hy = header
-            s.path(rounded_top(x0, y0, w, hy - y0, r),
-                   fill=s.linear(0, y0, 0, hy, [(0, accent, 0.38), (1, accent, 0.08)]))
-            s.rect(x0 + 1, hy - 0.5, w - 2, 1,
-                   s.linear(x0, 0, x1, 0, [(0, accent, 0), (0.5, accent, 0.9), (1, accent, 0)]))
-        s.rect(x0 + 0.5, y0 + 0.5, w - 1, h - 1, "none", rx=r - 0.5,
-               stroke=s.linear(0, y0, 0, y1, [(0, "#FFFFFF", 0.22), (0.3, accent, 0.18), (1, "#FFFFFF", 0.05)]),
-               sw=1.0)
-
-    def screen(x0, y0, x1, y1, accent, r=5):
-        s.rect(x0, y0, x1 - x0, y1 - y0, s.linear(0, y0, 0, y1, [(0, "#05040F", 0.92), (1, "#0B0922", 0.92)]), rx=r)
-        s.rect(x0 + 0.5, y0 + 0.5, x1 - x0 - 1, y1 - y0 - 1, "none", rx=r - 0.5,
-               stroke=s.linear(0, y0, 0, y1, [(0, accent, 0.45), (1, accent, 0.10)]), sw=1.0)
-
-    def head(text, x, y, accent, anchor="middle", size=8.0, tracking=0.14):
-        s.path(heading.path(text, x, y, size, tracking, anchor), fill=accent)
-
-    def small(text, x, y, col=C["text2"], anchor="middle", size=7.0, tracking=0.06, font=None):
-        s.path((font or label).path(text, x, y, size, tracking, anchor), fill=col)
-
-    def flank(x, y, text_w, accent, gap=6, length=24):
-        s.rect(x - text_w / 2 - gap - length, y, length, 1,
-               s.linear(x - text_w / 2 - gap - length, 0, x - text_w / 2 - gap, 0, [(0, accent, 0), (1, accent, 0.8)]))
-        s.rect(x + text_w / 2 + gap, y, length, 1,
-               s.linear(x + text_w / 2 + gap, 0, x + text_w / 2 + gap + length, 0, [(0, accent, 0.8), (1, accent, 0)]))
-
-    # ---- Header labels
-    for t, x, y in [("SCENE", 27, 9), ("MODE", 74, 9), ("SPLIT", 121.5, 9), ("POLY", 121.5, 36.5),
-                    ("PATCH BROWSER", 352, 9), ("STATUS", 577.5, 9), ("FX BYPASS  /  CHARACTER", 674.5, 9),
-                    ("OUTPUT", 827, 9)]:
-        head(t, x, y, C["text2"], size=7.0, tracking=0.16)
-    for t, x in [("CATEGORY", 212), ("PATCH", 293), ("HISTORY", 483)]:
-        small(t, x, 51.5, C["text3"], size=6.5, tracking=0.14)
-
-    # Patch browser display: the hero of the header
-    s.rect(157, 12, 390, 28, s.linear(0, 12, 0, 40, [(0, "#05040F", 0.85), (1, "#120E33", 0.85)]), rx=6)
-    s.rect(157.5, 12.5, 389, 27, "none", rx=5.5,
-           stroke=s.linear(157, 0, 547, 0, [(0, C["cyan"], 0.85), (0.5, C["violet"], 0.6), (1, C["pink"], 0.85)]))
-    s.rect(170, 12.5, 364, 1, s.linear(170, 0, 534, 0, [(0, "#FFFFFF", 0), (0.5, "#FFFFFF", 0.35), (1, "#FFFFFF", 0)]))
-
-    # ---- Oscillator column
-    panel(2, 58, 147, 396, C["cyan"], header=77)
-    head("OSCILLATOR", 8, 70.5, C["cyan"], anchor="start", size=7.5, tracking=0.10)
-    screen(4, 80, 145, 181, C["cyan"])
-    s.rect(6, 212.5, 137, 1, s.linear(6, 0, 143, 0, [(0, C["cyan"], 0), (0.5, C["cyan"], 0.45), (1, C["cyan"], 0)]))
-
-    # ---- Row 1
-    panel(150, 58, 297, 190, C["sky"], header=77)
-    head("BEND DEPTH", 186, 70.5, C["sky"])
-    head("PLAY MODE", 261, 70.5, C["sky"])
-    small("DOWN", 173, 107)
-    small("UP", 203, 107)
-    s.rect(238.5, 91.5, 51, 48, s.linear(0, 91, 0, 140, [(0, "#05040F", 0.6), (1, "#05040F", 0.3)]), rx=4,
-           stroke=s.linear(0, 91, 0, 140, [(0, C["sky"], 0.45), (1, C["sky"], 0.1)]))
-
-    panel(300, 58, 447, 190, C["azure"], header=77)
-    head("FM ROUTING", 373.5, 70.5, C["azure"])
-    s.rect(306, 153.5, 135, 1, s.linear(306, 0, 441, 0, [(0, C["azure"], 0), (0.5, C["azure"], 0.4), (1, C["azure"], 0)]))
-
-    panel(450, 58, 597, 190, C["violet"], header=77)
-    head("FILTER CONFIG", 523.5, 70.5, C["violet"])
-    s.rect(456, 153.5, 135, 1, s.linear(456, 0, 591, 0, [(0, C["violet"], 0), (0.5, C["violet"], 0.4), (1, C["violet"], 0)]))
-
-    panel(600, 58, 747, 190, C["magenta"], header=77)
-    head("SCENE OUTPUT", 673.5, 70.5, C["magenta"])
-
-    # ---- Row 2
-    panel(150, 193, 297, 258, C["sky"], header=212)
-    head("SCENE", 157, 205.5, C["sky"], anchor="start")
-
-    filt = s.linear(300, 0, 747, 0, [(0, C["violet"], 1), (0.5, C["magenta"], 1), (1, C["pink"], 1)])
-    panel(300, 193, 747, 258, C["magenta"], header=212)
-    head("FILTER 1", 463, 205.5, C["violet"], anchor="start", size=7.5)
-    head("FILTER 2", 584, 205.5, C["pink"], anchor="end", size=7.5)
-    s.path(triangle(457.5, 202.8, 4.5, "left"), fill=C["violet"])
-    s.path(triangle(589.5, 202.8, 4.5, "right"), fill=C["pink"])
-    for x in (448.5, 598.5):
-        s.rect(x, 215, 1, 40, s.linear(0, 215, 0, 255, [(0, "#FFFFFF", 0), (0.5, "#FFFFFF", 0.14), (1, "#FFFFFF", 0)]))
-    s.rect(300, 211.5, 447, 1, filt)
-
-    # ---- Row 3
-    panel(150, 262, 297, 396, C["cyan"])
-    for t, x in [("1", 163.5), ("2", 183.5), ("3", 203.5), ("1×2", 223.5), ("2×3", 243.5), ("N", 263.5),
-                 ("GAIN", 284)]:
-        small(t, x, 383, size=6.8)
-    for x0, x1, t in [(155, 212, "OSC"), (214, 252, "RING")]:
-        s.rect(x0, 387.5, x1 - x0, 6.5, s.linear(x0, 0, x1, 0, [(0, C["cyan"], 0.9), (1, C["azure"], 0.9)]), rx=3.25)
-        s.path(heading.path(t, (x0 + x1) / 2, 393, 5.5, 0.2, "middle"), fill=C["ink"])
-
-    panel(300, 262, 447, 396, C["pink"])
-    head("KEYTRACK", 331, 295, C["pink"], size=7.0)
-    s.rect(377.5, 282.5, 64, 108, s.linear(0, 283, 0, 391, [(0, C["pink"], 0.16), (1, C["pink"], 0.03)]), rx=5,
-           stroke=s.linear(0, 283, 0, 391, [(0, C["pink"], 0.55), (1, C["pink"], 0.12)]))
-    head("SHAPER", 409.5, 295, C["pink"], size=7.0)
-    for t, x in [("▸F1", 317), ("▸F2", 337), ("HP", 365)]:
-        if t.startswith("▸"):
-            s.path(triangle(x - 6.5, 380.6, 3.2, "right"), fill=C["text3"])
-            small(t[1:], x + 1.5, 383, size=6.8)
-        else:
-            small(t, x, 383, size=6.8)
-
-    panel(450, 262, 597, 396, C["rose"])
-    w_ = heading.width("FILTER EG", 7.5, 0.14)
-    head("FILTER EG", 522, 295, C["rose"], size=7.5)
-    flank(522, 291.5, w_, C["rose"], length=28)
-    for t, x in [("A", 466), ("D", 486), ("S", 506), ("R", 526)]:
-        small(t, x, 383, size=6.8)
-    for t, x in [("F1", 559), ("F2", 579)]:
-        s.path(triangle(x - 6.5, 380.6, 3.2, "right"), fill=C["text3"])
-        small(t, x + 1.5, 383, size=6.8)
-
-    panel(600, 262, 747, 396, C["coral"])
-    w_ = heading.width("AMP EG", 7.5, 0.14)
-    head("AMP EG", 649, 295, C["coral"], size=7.5)
-    flank(649, 291.5, w_, C["coral"], length=20)
-    head("AMP", 719, 295, C["coral"], size=7.0)
-    for t, x in [("A", 616), ("D", 636), ("S", 656), ("R", 676)]:
-        small(t, x, 383, size=6.8)
-    small("VEL", 712, 383, size=6.8)
-    s.path(triangle(722, 380.6, 3.2, "right"), fill=C["text3"])
-    small("GAIN", 734, 383, size=6.8)
-
-    # ---- Modulation sources
-    panel(2, 400, 747, 471, C["gold"], fill_opacity=0.7)
-    s.rect(14, 400.5, 721, 1, s.linear(14, 0, 735, 0, [(0, C["gold"], 0), (0.2, C["gold"], 0.7),
-                                                         (0.8, C["coral"], 0.7), (1, C["coral"], 0)]))
-
-    # ---- LFO
-    panel(2, 475, 747, 567, C["gold"])
-    s.path(f"M9 475.5H24V566.5H9Q2.5 566.5 2.5 560V482Q2.5 475.5 9 475.5Z",
-           fill=s.linear(0, 475, 0, 567, [(0, C["gold"], 0.32), (1, C["coral"], 0.12)]))
-    s.rect(24, 478, 1, 86, s.linear(0, 478, 0, 564, [(0, C["gold"], 0.6), (1, C["gold"], 0.1)]))
-    screen(233, 477.5, 596, 565.5, C["gold"])
-    w_ = heading.width("LFO EG", 7.5, 0.14)
-    head("LFO EG", 674, 486, C["gold"], size=7.5)
-    flank(674, 482.5, w_, C["gold"], length=34)
-    for t, x in [("D", 624), ("A", 644), ("H", 664), ("D", 684), ("S", 704), ("R", 724)]:
-        small(t, x, 560, size=6.8)
-
-    # ---- Effects
-    panel(750, 58, 902, 190, C["mint"], header=77)
-    head("EFFECTS", 826, 70.5, C["mint"])
-    panel(750, 193, 902, 567, C["lime"], header=212)
-
-    # Wordmark, in the quiet corner beside the main menu button
-    mark = s.linear(758, 0, 842, 0, [(o, c, 1) for o, c in SPECTRUM])
-    s.path(heading.path("SURGE XT", 758, 562.5, 12, 0.08), fill=mark)
-    s.rect(758, 548.5, 84, 0.75, s.linear(758, 0, 842, 0, [(0, "#FFFFFF", 0.35), (1, "#FFFFFF", 0)]))
-
-    return s.render()
 
 
 # ---------------------------------------------------------------------------
@@ -553,6 +234,118 @@ def glow_handles(text):
 HANDLE_FILES = re.compile(r"^(bmp|hover|bmpTS|hoverTS)0015[37]\.svg$|^[hv]slider_.*\.svg$")
 
 
+# Button faces: flat fills become top-lit gradients so every button reads as a
+# sculpted, slightly convex piece of coloured glass
+ON_FILLS = {remap("#FF9000"), remap("#FF9300"), C["pink"]}
+FACE_FILLS = {remap("#242424"), remap("#1F1F1F"), remap("#28282A"), remap("#151515")}
+SCULPT_DEFS = (
+    '<linearGradient id="aurora_on" x1="0" y1="0" x2="0" y2="1">'
+    '<stop offset="0" stop-color="#FFC2EA"/><stop offset="0.45" stop-color="#FF4FB8"/>'
+    '<stop offset="1" stop-color="#C42887"/></linearGradient>'
+    '<linearGradient id="aurora_face" x1="0" y1="0" x2="0" y2="1">'
+    '<stop offset="0" stop-color="#2E2868"/><stop offset="1" stop-color="#110E31"/></linearGradient>'
+    '<linearGradient id="aurora_cyan" x1="0" y1="0" x2="0" y2="1">'
+    '<stop offset="0" stop-color="#B8F7FF"/><stop offset="0.45" stop-color="#3DC8F0"/>'
+    '<stop offset="1" stop-color="#1A6FA8"/></linearGradient>'
+)
+
+
+def is_cyan_face(hexcol):
+    r, g, b = hex_to_rgb(hexcol)
+    h, l, s = colorsys.rgb_to_hls(r, g, b)
+    return 180 <= h * 360 <= 215 and s > 0.5 and 0.3 <= l <= 0.7
+
+
+def sculpt(text):
+    def swap(m):
+        col = m.group(2).upper()
+        if col in ON_FILLS:
+            return f'{m.group(1)}url(#aurora_on)"'
+        if col in FACE_FILLS:
+            return f'{m.group(1)}url(#aurora_face)"'
+        if is_cyan_face(col):
+            return f'{m.group(1)}url(#aurora_cyan)"'
+        return m.group(0)
+
+    sculpted = re.sub(r'(<(?:rect|path)\b[^>]*?\sfill=")(#[0-9A-Fa-f]{6})"', swap, text)
+    if sculpted == text:
+        return text
+    if "<defs>" in sculpted:
+        return sculpted.replace("<defs>", "<defs>" + SCULPT_DEFS, 1)
+    return sculpted.replace("</svg>", f"<defs>{SCULPT_DEFS}</defs></svg>")
+
+
+def rails_horizontal():
+    """Slider trays: recessed grooves. Columns are unmodulated / modulated by
+    another source / modulated by the selected source; rows are plain, bipolar
+    and semitone, then the same again for light panels."""
+    out = []
+    for col in range(3):
+        for row in range(6):
+            ox, cy, kind = 133 * col, 14 * row + 7, row % 3
+            out.append(
+                f'<rect x="{ox + 6}" y="{cy - 1.75}" width="121" height="3.5" rx="1.75" fill="url(#groove_h)"/>'
+                f'<rect x="{ox + 7}" y="{cy + 1.85}" width="119" height="0.5" rx="0.25" fill="#FFFFFF" fill-opacity="0.12"/>'
+            )
+            if col == 1:
+                out.append(f'<rect x="{ox + 5.75}" y="{cy - 2}" width="121.5" height="4" rx="2" fill="none" '
+                           f'stroke="{C["mint"]}" stroke-opacity="0.45" stroke-width="0.6"/>')
+            if col == 2:
+                out.append(f'<rect x="{ox + 6}" y="{cy - 1.75}" width="121" height="3.5" rx="1.75" '
+                           f'fill="{C["mint"]}" fill-opacity="0.35"/>'
+                           f'<rect x="{ox + 5.75}" y="{cy - 2}" width="121.5" height="4" rx="2" fill="none" '
+                           f'stroke="{C["mint"]}" stroke-width="0.8"/>')
+            tick = "#8C84D0"
+            for x in (10.5, 122.5):
+                out.append(f'<circle cx="{ox + x}" cy="{cy - 4}" r="0.7" fill="{tick}"/>')
+            if kind == 1:
+                out.append(f'<rect x="{ox + 66}" y="{cy - 5}" width="1" height="2.4" rx="0.5" fill="{tick}"/>')
+            if kind == 2:
+                for i in range(15):
+                    x = 10.5 + 8 * i
+                    h = 2.2 if i == 7 else 1.1
+                    out.append(f'<rect x="{ox + x - 0.4}" y="{cy + 3}" width="0.8" height="{h}" rx="0.4" '
+                               f'fill="{tick}" fill-opacity="0.8"/>')
+    return (
+        '<svg width="399" height="84" viewBox="0 0 399 84" fill="none" xmlns="http://www.w3.org/2000/svg">'
+        + "".join(out)
+        + '<defs><linearGradient id="groove_h" x1="0" y1="0" x2="0" y2="1">'
+        '<stop offset="0" stop-color="#000000"/><stop offset="1" stop-color="#14103A"/></linearGradient></defs></svg>'
+    )
+
+
+def rails_vertical():
+    """Vertical trays: plain, bipolar, mini and mini bipolar rows."""
+    rows = [(5, 70, 9.5, 65.5, None), (80, 145, 84.5, 140.5, 112.5),
+            (155, 203, 159.5, 198.5, None), (230, 278, 234.5, 273.5, 254)]
+    out = []
+    for col in range(3):
+        cx = 16 * col + 8
+        for y0, y1, t0, t1, mid in rows:
+            out.append(
+                f'<rect x="{cx - 1.75}" y="{y0}" width="3.5" height="{y1 - y0}" rx="1.75" fill="url(#groove_v)"/>'
+                f'<rect x="{cx + 1.85}" y="{y0 + 1}" width="0.5" height="{y1 - y0 - 2}" rx="0.25" fill="#FFFFFF" fill-opacity="0.10"/>'
+            )
+            if col == 1:
+                out.append(f'<rect x="{cx - 2}" y="{y0 - 0.25}" width="4" height="{y1 - y0 + 0.5}" rx="2" fill="none" '
+                           f'stroke="{C["mint"]}" stroke-opacity="0.45" stroke-width="0.6"/>')
+            if col == 2:
+                out.append(f'<rect x="{cx - 1.75}" y="{y0}" width="3.5" height="{y1 - y0}" rx="1.75" '
+                           f'fill="{C["mint"]}" fill-opacity="0.35"/>'
+                           f'<rect x="{cx - 2}" y="{y0 - 0.25}" width="4" height="{y1 - y0 + 0.5}" rx="2" fill="none" '
+                           f'stroke="{C["mint"]}" stroke-width="0.8"/>')
+            for y in (t0, t1):
+                out.append(f'<circle cx="{cx - 4}" cy="{y}" r="0.7" fill="#8C84D0"/>')
+            if mid:
+                out.append(f'<rect x="{cx - 5}" y="{mid - 0.5}" width="2.4" height="1" rx="0.5" fill="#8C84D0"/>')
+    return (
+        '<svg width="48" height="282" viewBox="0 0 48 282" fill="none" xmlns="http://www.w3.org/2000/svg">'
+        + "".join(out)
+        + '<defs><linearGradient id="groove_v" x1="0" y1="0" x2="1" y2="0">'
+        '<stop offset="0" stop-color="#000000"/><stop offset="1" stop-color="#14103A"/></linearGradient></defs></svg>'
+    )
+
+
 def build_widgets():
     out = DST / "SVG"
     out.mkdir(parents=True, exist_ok=True)
@@ -562,7 +355,75 @@ def build_widgets():
         text = remap_svg(src.read_text(), src.name)
         if HANDLE_FILES.match(src.name):
             text = glow_handles(text)
+        else:
+            text = sculpt(text)
         (out / src.name).write_text(text)
+    (out / "bmp00154.svg").write_text(rails_horizontal())
+    (out / "bmp00105.svg").write_text(rails_vertical())
+
+
+# ---------------------------------------------------------------------------
+# Rendered artwork: background and jewel handles
+# ---------------------------------------------------------------------------
+
+ZOOMS = (1, 2, 4)
+
+# Each section's colour, used for its handles and value fills
+ACCENTS = {
+    "cyan": C["cyan"], "sky": C["sky"], "azure": C["azure"], "violet": C["violet"],
+    "magenta": C["magenta"], "pink": C["pink"], "rose": C["rose"], "coral": C["coral"],
+    "gold": C["gold"], "mint": C["mint"], "pearl": "#E6E0FF",
+}
+
+
+def multi_image(image_id, stem):
+    rows = "".join(
+        f'\n            <image zoom-level="{100 * z}" resource="PNG/{stem}_{100 * z}.png"/>' for z in ZOOMS
+    )
+    return f'        <multi-image id="{image_id}">{rows}\n        </multi-image>'
+
+
+def build_pngs():
+    """Renders the HTML artwork and returns the multi-image declarations for skin.xml."""
+    png = DST / "PNG"
+    if png.exists():
+        shutil.rmtree(png)
+    png.mkdir(parents=True)
+
+    palette = dict(C)
+    palette["_spectrum"] = SPECTRUM
+    jobs, images = [], []
+
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+
+        def job(stem, html, w, h, image_id):
+            page = tmp / f"{stem}.html"
+            page.write_text(html)
+            jobs.append({"html": str(page), "out": str(png / stem), "width": w, "height": h,
+                         "scales": list(ZOOMS)})
+            images.append(multi_image(image_id, stem))
+
+        job("background", aurora_art.background_html(palette, FONTS.resolve().as_uri()), W, H, "aurora-bg")
+
+        for name, col in ACCENTS.items():
+            for orient, vertical in (("h", False), ("v", True)):
+                html, w, h = aurora_art.handle_sheet_html(col, C["mint"], vertical)
+                job(f"handle_{orient}_{name}", html, w, h, f"aurora-handle-{orient}-{name}")
+
+        for orient, vertical in (("h", False), ("v", True)):
+            html, w, h = aurora_art.handle_sheet_html("#E6E0FF", "#E6E0FF", vertical, "hover")
+            job(f"handle_{orient}_hover", html, w, h, f"aurora-handle-{orient}-hover")
+            for hover in (False, True):
+                html, w, h = aurora_art.sync_marker_html(vertical, hover)
+                stem = f"handle_{orient}_sync" + ("_hover" if hover else "")
+                job(stem, html, w, h, f"aurora-{stem.replace('_', '-')}")
+
+        (tmp / "jobs.json").write_text(json.dumps(jobs))
+        subprocess.run(["node", str(Path(__file__).parent / "render_png.js"), str(tmp / "jobs.json")],
+                       check=True)
+
+    return images
 
 
 # ---------------------------------------------------------------------------
@@ -666,6 +527,7 @@ def color_overrides():
         "modbutton.macro.slider.border": "#151236",
         "modbutton.macro.slider.fill": C["pink"],
         "modbutton.macro.slider.currentvalue": C["gold"],
+        "modbutton.sheen": "#FFFFFF2E",
         # Sliders & labels
         "slider.light.label": C["text2"],
         "slider.dark.label": C["text2"],
@@ -831,7 +693,7 @@ def resolve(value, named):
     return value
 
 
-def build_skin_xml():
+def build_skin_xml(images):
     src = (SRC / "skin.xml").read_text()
 
     # Every skinnable colour, starting from the Dark skin (or Surge's default)
@@ -871,7 +733,9 @@ def build_skin_xml():
         '        <default-font family="Outfit-Medium"/>\n\n'
         "        <!-- Generated by scripts/aurora-skin/generate_aurora_skin.py -->\n"
         + "\n".join(lines)
-        + "\n\n        "
+        + "\n\n"
+        + "\n".join(images)
+        + '\n\n        <background image="aurora-bg"/>\n\n        '
     )
     body = src[:globals_start] + head + src[first_image:]
     body = re.sub(
@@ -881,17 +745,70 @@ def build_skin_xml():
         body,
         count=1,
     )
+
+    # One slider class per section and orientation: jewel handles and a glowing value fill
+    classes = []
+    for name, col in ACCENTS.items():
+        for orient in ("h", "v"):
+            classes.append(
+                f'        <class name="aurora-{orient}-{name}" parent="Slider" '
+                f'handle_image="aurora-handle-{orient}-{name}" '
+                f'handle_hover_image="aurora-handle-{orient}-hover" '
+                f'handle_temposync_image="aurora-handle-{orient}-sync" '
+                f'handle_temposync_hover_image="aurora-handle-{orient}-sync-hover" '
+                f'value_fill_color="{col}"/>'
+            )
+    body = body.replace("<component-classes>", "<component-classes>\n" + "\n".join(classes), 1)
+
+    # Put every slider in its section's class, keeping the Dark skin's positions
+    for cid, cls in slider_classes().items():
+        pattern = re.compile(r'(<control ui_identifier="' + re.escape(cid) + r'"[^>]*?)(\s*/>)')
+        m = pattern.search(body)
+        if m:
+            tag = re.sub(r'\sclass="[^"]*"', "", m.group(1))
+            body = body[: m.start()] + f'{tag} class="{cls}"{m.group(2)}' + body[m.end():]
+        else:
+            body = body.replace(
+                "</controls>", f'    <control ui_identifier="{cid}" class="{cls}"/>\n    </controls>', 1
+            )
     (DST / "skin.xml").write_text(body)
 
 
+def slider_classes():
+    """Which section every slider belongs to."""
+    h, v = {}, {}
+    h.update({f"osc.{p}": "cyan" for p in ["pitch"] + [f"param_{i}" for i in range(1, 8)]})
+    h.update({f"scene.{p}": "sky" for p in ("drift", "noise_color", "pitch", "portamento")})
+    h["scene.fmdepth"] = "azure"
+    h.update({"filter.feedback": "violet", "filter.cutoff_1": "violet", "filter.resonance_1": "violet",
+              "filter.balance": "magenta", "filter.cutoff_2": "pink", "filter.resonance_2": "pink"})
+    h.update({f"scene.{p}": "magenta" for p in ("volume", "pan", "width", "send_fx_1", "send_fx_2",
+                                                 "send_fx_3", "send_fx_4")})
+    h.update({f"lfo.{p}": "gold" for p in ("rate", "phase", "deform", "amplitude")})
+    h.update({f"fx.param_{i}": "mint" for i in range(1, 13)})
+    h.update({f"global.fx{i}_return": "mint" for i in range(1, 5)})
+    h["global.volume"] = "pearl"
+
+    v.update({f"mixer.level_{p}": "cyan" for p in ("o1", "o2", "o3", "ring12", "ring23", "noise",
+                                                   "prefiltergain")})
+    v.update({f"filter.{p}": "pink" for p in ("keytrack_1", "keytrack_2", "highpass", "waveshaper_drive")})
+    v.update({"filter.envmod_1": "rose", "filter.envmod_2": "rose"})
+    v.update({f"feg.{p}": "rose" for p in ("attack", "decay", "sustain", "release")})
+    v.update({f"aeg.{p}": "coral" for p in ("attack", "decay", "sustain", "release")})
+    v.update({"scene.velocity_sensitivity": "coral", "scene.gain": "coral"})
+    v.update({f"lfo.{p}": "gold" for p in ("delay", "attack", "hold", "decay", "sustain", "release")})
+
+    res = {k: f"aurora-h-{a}" for k, a in h.items()}
+    res.update({k: f"aurora-v-{a}" for k, a in v.items()})
+    return res
+
+
 def main():
-    heading = Outliner(FONTS / "Outfit-SemiBold.ttf")
-    label = Outliner(FONTS / "Outfit-Medium.ttf")
     if (DST / "SVG").exists():
         shutil.rmtree(DST / "SVG")
     build_widgets()
-    (DST / "SVG" / "bmp00102.svg").write_text(build_background(heading, label))
-    build_skin_xml()
+    images = build_pngs()
+    build_skin_xml(images)
     print(f"Wrote {DST.relative_to(ROOT)}")
 
 

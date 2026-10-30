@@ -155,6 +155,7 @@ struct Component
         HANDLE_TEMPOSYNC_IMAGE,
         HANDLE_TEMPOSYNC_HOVER_IMAGE,
         HIDE_SLIDER_LABEL,
+        VALUE_FILL_COLOR,
 
         CONTROL_TEXT,
         FONT_SIZE,

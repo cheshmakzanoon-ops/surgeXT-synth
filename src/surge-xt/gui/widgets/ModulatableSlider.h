@@ -148,6 +148,10 @@ struct ModulatableSlider : public juce::Component,
 
     SurgeImage *pTray, *pHandle, *pHandleHover, *pTempoSyncHandle, *pTempoSyncHoverHandle;
 
+    // Skins may ask for the value to be drawn as a bar from the zero point to the handle
+    bool drawValueFill{false};
+    juce::Colour valueFillColour;
+
     std::function<std::string()> customToAccessibleString{nullptr};
 
   private:

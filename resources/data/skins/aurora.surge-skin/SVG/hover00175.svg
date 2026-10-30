@@ -1,4 +1,4 @@
 <svg width="30" height="13" viewBox="0 0 30 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="2.65218" y="2.54166" width="25" height="8" rx="1" fill="#4DD3FF"/>
+<rect x="2.65218" y="2.54166" width="25" height="8" rx="1" fill="url(#aurora_cyan)"/>
 <rect x="2.65218" y="2.54166" width="25" height="8" rx="1" stroke="#4DD3FF"/>
-</svg>
+<defs><linearGradient id="aurora_on" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC2EA"/><stop offset="0.45" stop-color="#FF4FB8"/><stop offset="1" stop-color="#C42887"/></linearGradient><linearGradient id="aurora_face" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2E2868"/><stop offset="1" stop-color="#110E31"/></linearGradient><linearGradient id="aurora_cyan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B8F7FF"/><stop offset="0.45" stop-color="#3DC8F0"/><stop offset="1" stop-color="#1A6FA8"/></linearGradient></defs></svg>

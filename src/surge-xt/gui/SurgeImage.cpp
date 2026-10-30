@@ -87,22 +87,40 @@ SurgeImage *SurgeImage::createFromBinaryWithPrefix(const std::string &prefix, in
 
 void SurgeImage::setPhysicalZoomFactor(int zoomFactor)
 {
-    resolvePNGForZoomLevel(zoomFactor);
     currentPhysicalZoomFactor = zoomFactor;
 
-    if (pngZooms.size() > 0)
+    if (pngZooms.size() > 0 && zoomFactor <= 100)
     {
+        // The base image is the 100% resolution
+        currentDrawable = drawable.get();
+        adjustForScale = false;
+    }
+    else if (pngZooms.size() > 0)
+    {
+        /*
+         * Use the nearest resolution: the smallest one at or above the zoom, since scaling
+         * down stays crisp, or failing that the largest one we have
+         */
+        auto best = pngZooms.rbegin()->first;
+        for (auto &p : pngZooms)
+        {
+            if (p.first >= zoomFactor)
+            {
+                best = p.first;
+                break;
+            }
+        }
+        resolvePNGForZoomLevel(best);
+
         currentDrawable = drawable.get();
         adjustForScale = false;
 
-        for (auto &p : pngZooms)
+        auto &resolved = pngZooms[best].second;
+        if (resolved && resolved->drawable)
         {
-            if (p.first <= currentPhysicalZoomFactor && p.second.second)
-            {
-                currentDrawable = p.second.second->drawable.get();
-                adjustForScale = true;
-                resolvedZoomFactor = p.first;
-            }
+            currentDrawable = resolved->drawable.get();
+            adjustForScale = true;
+            resolvedZoomFactor = best;
         }
     }
     else

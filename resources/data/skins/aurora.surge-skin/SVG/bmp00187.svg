@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <svg width="13px" height="52px" viewBox="0 0 13 52" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
-  <defs>
+  <defs><linearGradient id="aurora_on" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC2EA"/><stop offset="0.45" stop-color="#FF4FB8"/><stop offset="1" stop-color="#C42887"/></linearGradient><linearGradient id="aurora_face" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2E2868"/><stop offset="1" stop-color="#110E31"/></linearGradient><linearGradient id="aurora_cyan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B8F7FF"/><stop offset="0.45" stop-color="#3DC8F0"/><stop offset="1" stop-color="#1A6FA8"/></linearGradient>
     <rect width="13" height="52" id="artboard_1" />
     <clipPath id="clip_1">
       <use xlink:href="#artboard_1" clip-rule="evenodd" />
@@ -17,13 +17,13 @@
       <path d="M8.24635 7.3919L7.39218 8.24608L5.89706 6.75096L6.75124 5.89679L8.24635 7.3919L8.24635 7.3919Z" id="Shape#2" fill="#C3BCEC" fill-rule="evenodd" stroke="none" />
       <path d="M10.4498 8.74143L8.67405 6.96571C8.43816 6.72981 8.05577 6.72981 7.81988 6.96571L6.9657 7.81989C6.7298 8.05578 6.7298 8.43817 6.9657 8.67407L8.74141 10.4498C9.2132 10.9219 9.97857 10.9219 10.4504 10.4498C10.9215 9.97828 10.9212 9.21321 10.4498 8.74143L10.4498 8.74143L10.4498 8.74143Z" id="Shape#3" fill="#C3BCEC" fill-rule="evenodd" stroke="none" />
       <path d="M0 4.07758C0 1.8256 1.82559 0 4.07757 0C6.32955 0 8.15514 1.8256 8.15514 4.07758C8.15514 6.32957 6.32955 8.15516 4.07757 8.15516C1.82559 8.15516 0 6.32957 0 4.07758L0 4.07758Z" id="Circle#2" fill="#C3BCEC" fill-rule="evenodd" stroke="none" />
-      <path d="M1.20818 4.07759C1.20818 2.49286 2.49285 1.20818 4.07758 1.20818C5.66231 1.20818 6.94698 2.49286 6.94698 4.07759C6.94698 5.66232 5.66231 6.947 4.07758 6.947C2.49285 6.947 1.20818 5.66232 1.20818 4.07759L1.20818 4.07759Z" id="Circle#3" fill="#FF29B1" fill-rule="evenodd" stroke="none" />
+      <path d="M1.20818 4.07759C1.20818 2.49286 2.49285 1.20818 4.07758 1.20818C5.66231 1.20818 6.94698 2.49286 6.94698 4.07759C6.94698 5.66232 5.66231 6.947 4.07758 6.947C2.49285 6.947 1.20818 5.66232 1.20818 4.07759L1.20818 4.07759Z" id="Circle#3" fill="url(#aurora_on)" fill-rule="evenodd" stroke="none" />
     </g>
     <g id="Off-Hover" transform="translate(1 14)">
       <path d="M8.24635 7.3919L7.39218 8.24608L5.89706 6.75096L6.75124 5.89679L8.24635 7.3919L8.24635 7.3919Z" id="Shape" fill="#C3BCEC" fill-rule="evenodd" stroke="none" />
       <path d="M10.4498 8.74142L8.67405 6.96571C8.43816 6.72981 8.05577 6.72981 7.81988 6.96571L6.9657 7.81988C6.7298 8.05578 6.7298 8.43817 6.9657 8.67406L8.74141 10.4498C9.2132 10.9219 9.97857 10.9219 10.4504 10.4498C10.9215 9.97828 10.9212 9.21321 10.4498 8.74142L10.4498 8.74142L10.4498 8.74142Z" id="Shape#1" fill="#C3BCEC" fill-rule="evenodd" stroke="none" />
       <path d="M0 4.07758C0 1.8256 1.82559 0 4.07757 0C6.32955 0 8.15514 1.8256 8.15514 4.07758C8.15514 6.32957 6.32955 8.15516 4.07757 8.15516C1.82559 8.15516 0 6.32957 0 4.07758L0 4.07758Z" id="Circle" fill="#C3BCEC" fill-rule="evenodd" stroke="none" />
-      <path d="M1.20818 4.07759C1.20818 2.49286 2.49285 1.20818 4.07758 1.20818C5.66231 1.20818 6.94698 2.49286 6.94698 4.07759C6.94698 5.66232 5.66231 6.94699 4.07758 6.94699C2.49285 6.94699 1.20818 5.66232 1.20818 4.07759L1.20818 4.07759Z" id="Circle#1" fill="#FF4FB8" fill-rule="evenodd" stroke="none" />
+      <path d="M1.20818 4.07759C1.20818 2.49286 2.49285 1.20818 4.07758 1.20818C5.66231 1.20818 6.94698 2.49286 6.94698 4.07759C6.94698 5.66232 5.66231 6.94699 4.07758 6.94699C2.49285 6.94699 1.20818 5.66232 1.20818 4.07759L1.20818 4.07759Z" id="Circle#1" fill="url(#aurora_on)" fill-rule="evenodd" stroke="none" />
     </g>
     <g id="Off" transform="translate(0.9909363 0.99993896)">
       <path d="M8.24635 7.3919L7.39218 8.24608L5.89706 6.75096L6.75124 5.89679L8.24635 7.3919L8.24635 7.3919Z" id="Shape" fill="#968BDD" fill-rule="evenodd" stroke="none" />
