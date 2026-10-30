@@ -264,6 +264,8 @@ const Surge::Skin::Color Background("popupmenu.background", 0x303030),
 
 namespace ModSource
 {
+const Surge::Skin::Color Sheen("modbutton.sheen", 0xFFFFFF, 0x00);
+
 namespace Unused
 {
 const Surge::Skin::Color Background("modbutton.unused.fill", 0x123463),

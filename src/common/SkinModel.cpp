@@ -94,7 +94,10 @@ Component Slider =
         .withProperty(Component::TEXT_VOFFSET, {"text_voffset"},
                       {"Vertical offset of parameter name label, integer only"})
         .withProperty(Component::HIDE_SLIDER_LABEL, {"hide_slider_label"},
-                      {"Hides the parameter name label"});
+                      {"Hides the parameter name label"})
+        .withProperty(Component::VALUE_FILL_COLOR, {"value_fill_color"},
+                      {"Color (hex or named) of a bar drawn along the tray from the slider's zero "
+                       "point to its handle; no bar is drawn if this is not set"});
 
 Component Switch =
     Component("CSwitchControl")

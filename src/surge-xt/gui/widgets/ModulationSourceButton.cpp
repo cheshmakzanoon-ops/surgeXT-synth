@@ -247,6 +247,15 @@ void ModulationSourceButton::paint(juce::Graphics &g)
     g.setColour(FillCol);
     g.fillRect(fillRect);
 
+    auto sheen = skin->getColor(Colors::ModSource::Sheen);
+
+    if (sheen.getAlpha() > 0)
+    {
+        g.setGradientFill(juce::ColourGradient(sheen, 0, fillRect.getY(), sheen.withAlpha(0.f), 0,
+                                               fillRect.getCentreY(), false));
+        g.fillRect(fillRect);
+    }
+
     if (!isMeta)
     {
         // modbutton name settings

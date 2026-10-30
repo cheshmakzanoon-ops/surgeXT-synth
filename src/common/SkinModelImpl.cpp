@@ -148,6 +148,7 @@ std::string Component::propertyEnumToString(Properties p)
         PN(HANDLE_TEMPOSYNC_IMAGE)
         PN(HANDLE_TEMPOSYNC_HOVER_IMAGE)
         PN(HIDE_SLIDER_LABEL)
+        PN(VALUE_FILL_COLOR)
 
         PN(CONTROL_TEXT)
         PN(FONT_SIZE)

@@ -239,6 +239,8 @@ namespace Macro
 {
 extern const Surge::Skin::Color Background, Border, Fill, CurrentValue;
 }
+// A highlight across the top of every button; transparent (off) unless a skin sets it
+extern const Surge::Skin::Color Sheen;
 } // namespace ModSource
 
 namespace MSEGEditor
