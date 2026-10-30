@@ -183,8 +183,9 @@ void SkinDB::rescanForSkins(SurgeStorage *storage)
                     e.rootType = rt;
                     e.root = path;
                     e.name = lo + PATH_SEPARATOR;
-                    if (e.name.find("default.surge-skin") != std::string::npos && rt == FACTORY &&
-                        defaultSkinEntry.name == "")
+                    if ((e.name.find("default.surge-skin") != std::string::npos ||
+                         lo == DefaultFactorySkinDirectory) &&
+                        rt == FACTORY && !foundDefaultSkinEntry)
                     {
                         defaultSkinEntry = e;
                         foundDefaultSkinEntry = true;
@@ -194,15 +195,20 @@ void SkinDB::rescanForSkins(SurgeStorage *storage)
             }
         }
     }
+
+    // The built-in skin is always available, so users can return to Surge Classic
+    // even when a factory skin is the default
+    auto memSkin = Entry();
+    memSkin.rootType = MEMORY;
+    memSkin.name = MemorySkinName;
+    memSkin.displayName = MemorySkinName;
+    memSkin.category = "";
+    memSkin.root = "";
+    memSkin.parseable = true;
+    availableSkins.push_back(memSkin);
+
     if (!foundDefaultSkinEntry)
     {
-        auto memSkin = Entry();
-        memSkin.rootType = MEMORY;
-        memSkin.name = MemorySkinName;
-        memSkin.displayName = MemorySkinName;
-        memSkin.category = "";
-        memSkin.root = "";
-        availableSkins.push_back(memSkin);
         defaultSkinEntry = memSkin;
     }
 

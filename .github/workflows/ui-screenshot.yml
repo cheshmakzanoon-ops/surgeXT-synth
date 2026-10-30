@@ -1,0 +1,76 @@
+name: "UI Screenshot"
+
+# Builds the standalone, photographs the default (Aurora) UI on a virtual
+# display and commits the picture shown at the top of the README.
+
+on:
+  push:
+    paths:
+      - "resources/data/skins/aurora.surge-skin/**"
+      - "scripts/aurora-skin/**"
+      - "src/surge-xt/gui/**"
+      - ".github/workflows/ui-screenshot.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ui-screenshot-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  screenshot:
+    name: Screenshot the UI
+    runs-on: ubuntu-latest
+    env:
+      SCREENSHOT: doc/screenshots/surge-xt-aurora.png
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: "Prepare for JUCE"
+        uses: surge-synthesizer/sst-githubactions/prepare-for-juce@main
+        with:
+          os: ${{ runner.os }}
+
+      - name: "Install screenshot tools"
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb xdotool imagemagick
+
+      - name: "Build the standalone"
+        run: |
+          cmake -S . -B ./build -GNinja -DCMAKE_BUILD_TYPE=Release
+          cmake --build ./build --target surge-xt_Standalone --parallel 4
+
+      - name: "Take the screenshot"
+        run: |
+          mkdir -p "$(dirname "$SCREENSHOT")"
+          scripts/aurora-skin/screenshot.sh "build/surge_xt_products/Surge XT" "$SCREENSHOT" 200 "Pads/Communication"
+
+      - name: "Upload the screenshot"
+        uses: actions/upload-artifact@v4
+        with:
+          name: surge-xt-ui-screenshot
+          path: ${{ env.SCREENSHOT }}
+
+      - name: "Commit the screenshot"
+        if: github.ref_type == 'branch'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$SCREENSHOT"
+          if git diff --cached --quiet; then
+            echo "Screenshot unchanged"
+            exit 0
+          fi
+          git commit -m "Update the UI screenshot"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"

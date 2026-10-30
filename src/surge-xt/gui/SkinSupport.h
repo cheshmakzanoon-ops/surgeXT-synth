@@ -75,6 +75,8 @@ void loadTypefacesFromPath(const fs::path &p,
 extern const std::string NoneClassName;
 
 static constexpr char MemorySkinName[] = "Surge Classic";
+// A factory skin in this directory is used when the user hasn't chosen a skin
+static constexpr char DefaultFactorySkinDirectory[] = "aurora.surge-skin";
 
 class SkinDB;
 

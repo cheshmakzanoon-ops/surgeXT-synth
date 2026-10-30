@@ -1,5 +1,10 @@
 # Surge XT
 
+![Surge XT with the Aurora skin](doc/screenshots/surge-xt-aurora.png)
+
+<sub>Surge XT in its default <b>Aurora</b> skin. This screenshot is taken automatically by the
+<a href=".github/workflows/ui-screenshot.yml">UI Screenshot</a> workflow whenever the UI changes.</sub>
+
 **If you are a musician looking to use Surge XT, please download the appropriate binary
 [from our website](https://surge-synthesizer.github.io). Surge Synth Team makes regular releases for all supported
 platforms.**
